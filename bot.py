@@ -40,8 +40,10 @@ async def on_message(message):
         await message.channel.send(capacity)
 
     if message.content.startswith('$ngmi'):
-        msg = "<@!358623012657954816> is NGMI <:peepoRibbon:810321415722762241> https://discord.com/channels/808777716396195851/821798177501085727/831671219635748904"
-        await message.channel.send(msg)
+        e = discord.Embed()
+        e.set_image(url="https://cdn.discordapp.com/attachments/821798177501085727/831671217622089778/Screenshot_2021-04-14_at_00.24.20.png")
+        msg = "<@!358623012657954816> is NGMI <:peepoRibbon:810321415722762241>"
+        await message.channel.send(msg, embed=e)
 
 
 client.run(TOKEN)
