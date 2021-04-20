@@ -24,7 +24,7 @@ def get_vault_capacity():
     
     capacity = (cap - balance) / 10**18
     # print(f"{capacity:.2f} eth")
-    return f"The Theta Vault has {capacity:.2f} ETH of capacity."
+    return f"{capacity:.2f} ETH is the Theta Vault Capacity."
 
 @client.event
 async def on_ready():
