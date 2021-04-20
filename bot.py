@@ -45,5 +45,13 @@ async def on_message(message):
         msg = "<@!358623012657954816> is NGMI <:peepoRibbon:810321415722762241>"
         await message.channel.send(msg, embed=e)
 
+    if message.content.startswith('$wen-token'):
+        e = discord.Embed()
+        e.set_image(url="https://media.discordapp.net/attachments/821798177501085727/832618375981039676/ribbonrug-picsay.jpg")
+        msg = "No tokens, only rugs <:peepoRibbon:810321415722762241>"
+        await message.channel.send(msg, embed=e)
+
+
+
 
 client.run(TOKEN)
