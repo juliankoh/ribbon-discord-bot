@@ -35,7 +35,7 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith('$capacity'):
+    if message.content.startswith('$vault'):
         capacity = get_vault_capacity()
         await message.channel.send(capacity)
 
@@ -45,13 +45,21 @@ async def on_message(message):
         msg = "<@!358623012657954816> is NGMI <:peepoRibbon:810321415722762241>"
         await message.channel.send(msg, embed=e)
 
-    if message.content.startswith('$wen-token'):
+    if message.content.startswith('$wen'):
         e = discord.Embed()
         e.set_image(url="https://media.discordapp.net/attachments/821798177501085727/832618375981039676/ribbonrug-picsay.jpg")
-        msg = "No tokens, only rugs <:peepoRibbon:810321415722762241>"
+        msg = "No tokens, only rugs kek <:peepoRibbon:810321415722762241>"
         await message.channel.send(msg, embed=e)
 
+    if message.content.startswith('$hat'):
+        e = discord.Embed()
+        e.set_image(url="https://tenor.com/view/pulp-fiction-wtf-huh-john-travolta-confused-gif-5521264")
+        msg = "idk man <:ribbonHat:829706651216248872>"
+        await message.channel.send(msg, embed=e)
 
+    if message.content.startswith('$help'):
+        msg = "Ribbon bot commands:\n\n$vault - Tetha Vault available space\n$ngmi - someone is ngmi\n$wen - wen token?\n$hat - wen hat?"
+        await message.channel.send(msg, embed=e)
 
 
 client.run(TOKEN)
