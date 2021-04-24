@@ -53,13 +53,13 @@ async def on_message(message):
 
     if message.content.startswith('$hat'):
         e = discord.Embed()
-        e.set_image(url="https://tenor.com/view/pulp-fiction-wtf-huh-john-travolta-confused-gif-5521264")
+        e.set_image(url="https://i.pinimg.com/originals/7c/e9/3c/7ce93c4bbabb1d024366f549c62b2b0f.gif")
         msg = "idk man <:ribbonHat:829706651216248872>"
         await message.channel.send(msg, embed=e)
 
     if message.content.startswith('$help'):
         msg = "Ribbon bot commands:\n\n$vault - Tetha Vault available space\n$ngmi - someone is ngmi\n$wen - wen token?\n$hat - wen hat?"
-        await message.channel.send(msg, embed=e)
+        await message.channel.send(msg)
 
 
 client.run(TOKEN)
