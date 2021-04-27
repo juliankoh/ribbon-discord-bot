@@ -17,16 +17,6 @@ ABI = """[{"inputs":[{"internalType":"address","name":"_factory","type":"address
 
 client = discord.Client()
 
-def get_vault_capacity():
-    contract = w3.eth.contract(address=ADDRESS, abi=ABI)
-    
-    cap = contract.functions.cap().call()
-    balance = contract.functions.totalBalance().call()
-    
-    capacity = (cap - balance) / 10**18
-    # print(f"{capacity:.2f} eth")
-    return f"{capacity:.2f} ETH is the Theta Vault Capacity."
-
 def get_strike_percent():
     # connecting to prometheus
     prom = PrometheusConnect(url ="http://18.217.47.37:9090/", disable_ssl=True)
@@ -42,9 +32,15 @@ def get_strike_percent():
     percent = ((strike_price / eth_price) - 1) * 100
     return f"{percent:.2f}% away from the Strike Price"
 
-# assume that content is a json reply
-# parse content with the json module
-data = json.loads(content)
+def get_vault_capacity():
+    contract = w3.eth.contract(address=ADDRESS, abi=ABI)
+    
+    cap = contract.functions.cap().call()
+    balance = contract.functions.totalBalance().call()
+    
+    capacity = (cap - balance) / 10**18
+    # print(f"{capacity:.2f} eth")
+    return f"{capacity:.2f} ETH is the Theta Vault Capacity."
 
 @client.event
 async def on_ready():
@@ -77,13 +73,13 @@ async def on_message(message):
         msg = "idk man <:ribbonHat:829706651216248872>"
         await message.channel.send(msg, embed=e)
 
-    if message.content.startswith('$strike'):
-        strike_percent = get_strike_percent()
-        await message.channel.send(strike_percent)
-
     if message.content.startswith('$help'):
         msg = "Ribbon bot commands:\n\n$vault - Tetha Vault available space\n$ngmi - someone is ngmi\n$wen - wen token?\n$hat - wen hat?"
         await message.channel.send(msg)
+    
+    if message.content.startswith('$strike'):
+         strike_percent = get_strike_percent()
+         await message.channel.send(strike_percent)
 
 
 client.run(TOKEN)
