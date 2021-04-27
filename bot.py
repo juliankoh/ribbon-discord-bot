@@ -81,5 +81,4 @@ async def on_message(message):
          strike_percent = get_strike_percent()
          await message.channel.send(strike_percent)
 
-
 client.run(TOKEN)
