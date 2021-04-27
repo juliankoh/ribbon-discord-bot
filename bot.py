@@ -2,6 +2,7 @@ import discord
 import os
 from web3 import Web3
 from dotenv import load_dotenv
+from prometheus_api_client import PrometheusConnect
 
 load_dotenv()
 
@@ -24,7 +25,26 @@ def get_vault_capacity():
     
     capacity = (cap - balance) / 10**18
     # print(f"{capacity:.2f} eth")
-    return f"The Theta Vault has {capacity:.2f} ETH of capacity."
+    return f"{capacity:.2f} ETH is the Theta Vault Capacity."
+
+def get_strike_percent():
+    # connecting to prometheus
+    prom = PrometheusConnect(url ="http://18.217.47.37:9090/", disable_ssl=True)
+
+    # getting strike price
+    strike_price = prom.custom_query(query="query_vaultShortPositions_strikePrice{job='rETH-THETA'} / 100000000")
+    strike_price = float(strike_price[0]["value"][1])
+
+    # getting eth price
+    eth_price = prom.custom_query(query="crypto_currency{pair='ethusd', exchange='kraken'}")
+    eth_price = float(eth_price[0]["value"][1])
+
+    percent = ((strike_price / eth_price) - 1) * 100
+    return f"{percent:.2f}% away from the Strike Price"
+
+# assume that content is a json reply
+# parse content with the json module
+data = json.loads(content)
 
 @client.event
 async def on_ready():
@@ -35,7 +55,7 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith('$capacity'):
+    if message.content.startswith('$vault'):
         capacity = get_vault_capacity()
         await message.channel.send(capacity)
 
@@ -44,6 +64,26 @@ async def on_message(message):
         e.set_image(url="https://cdn.discordapp.com/attachments/821798177501085727/831671217622089778/Screenshot_2021-04-14_at_00.24.20.png")
         msg = "<@!358623012657954816> is NGMI <:peepoRibbon:810321415722762241>"
         await message.channel.send(msg, embed=e)
+
+    if message.content.startswith('$wen'):
+        e = discord.Embed()
+        e.set_image(url="https://media.discordapp.net/attachments/821798177501085727/832618375981039676/ribbonrug-picsay.jpg")
+        msg = "No tokens, only rugs kek <:peepoRibbon:810321415722762241>"
+        await message.channel.send(msg, embed=e)
+
+    if message.content.startswith('$hat'):
+        e = discord.Embed()
+        e.set_image(url="https://i.pinimg.com/originals/7c/e9/3c/7ce93c4bbabb1d024366f549c62b2b0f.gif")
+        msg = "idk man <:ribbonHat:829706651216248872>"
+        await message.channel.send(msg, embed=e)
+
+    if message.content.startswith('$strike'):
+        strike_percent = get_strike_percent()
+        await message.channel.send(strike_percent)
+
+    if message.content.startswith('$help'):
+        msg = "Ribbon bot commands:\n\n$vault - Tetha Vault available space\n$ngmi - someone is ngmi\n$wen - wen token?\n$hat - wen hat?"
+        await message.channel.send(msg)
 
 
 client.run(TOKEN)
