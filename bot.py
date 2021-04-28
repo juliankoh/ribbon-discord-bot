@@ -1,4 +1,5 @@
 import discord
+from discord.ext import tasks
 import os
 from web3 import Web3
 from dotenv import load_dotenv
@@ -7,6 +8,7 @@ load_dotenv()
 
 TOKEN = os.getenv('DISCORD_TOKEN')
 INFURA_KEY = os.getenv('INFURA_KEY')
+VAULT_REFRESH_TIMER = os.getenv('VAULT_REFRESH_TIMER')
 
 ADDRESS = "0x0FABaF48Bbf864a3947bdd0Ba9d764791a60467A"
 
@@ -24,11 +26,17 @@ def get_vault_capacity():
     
     capacity = (cap - balance) / 10**18
     # print(f"{capacity:.2f} eth")
-    return f"{capacity:.2f} ETH is the Theta Vault Capacity."
+    return f"{capacity:.2f} ETH Capacity"
 
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
+    refresh_capacity.start()
+
+@tasks.loop(seconds=float(VAULT_REFRESH_TIMER))
+async def refresh_capacity():
+    capacity = get_vault_capacity()
+    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=capacity))
 
 @client.event
 async def on_message(message):
@@ -60,6 +68,5 @@ async def on_message(message):
     if message.content.startswith('$help'):
         msg = "Ribbon bot commands:\n\n$vault - Tetha Vault available space\n$ngmi - someone is ngmi\n$wen - wen token?\n$hat - wen hat?"
         await message.channel.send(msg)
-
 
 client.run(TOKEN)
