@@ -24,9 +24,8 @@ def get_vault_capacity():
     cap = contract.functions.cap().call()
     balance = contract.functions.totalBalance().call()
     
-    capacity = (cap - balance) / 10**18
-    # print(f"{capacity:.2f} eth")
-    return f"{capacity:.2f} ETH Capacity"
+    capacity = (cap - balance) / 10**8
+    return f"{capacity:.2f} WBTC Capacity"
 
 @client.event
 async def on_ready():
