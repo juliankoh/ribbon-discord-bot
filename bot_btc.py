@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-TOKEN = os.getenv('DISCORD_TOKEN')
+TOKEN = os.getenv('DISCORD_TOKEN_BTC')
 INFURA_KEY = os.getenv('INFURA_KEY')
 VAULT_REFRESH_TIMER = os.getenv('VAULT_REFRESH_TIMER')
 
