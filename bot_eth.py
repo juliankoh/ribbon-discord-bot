@@ -55,7 +55,7 @@ async def refresh_capacity():
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=capacity))
 
 @tasks.loop(seconds=float(VAULT_REFRESH_TIMER))
-async def refresh_capacity():
+async def refresh_strike():
     strike_percent = get_strike_percent()
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=strike_percent))
 
