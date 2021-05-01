@@ -3,6 +3,7 @@ from discord.ext import tasks
 import os
 from web3 import Web3
 from dotenv import load_dotenv
+from prometheus_api_client import PrometheusConnect
 
 load_dotenv()
 
@@ -27,6 +28,21 @@ def get_vault_capacity():
     capacity = (cap - balance) / 10**8
     return f"{capacity:.2f} WBTC Capacity"
 
+def get_strike_percent():
+    # connecting to prometheus
+    prom = PrometheusConnect(url ="http://18.217.47.37:9090/", disable_ssl=True)
+
+    # getting strike price
+    strike_price = prom.custom_query(query="query_vaultShortPositions_strikePrice{job='rBTC-THETA'} / 100000000")
+    strike_price = float(strike_price[0]["value"][1])
+
+    # getting eth price
+    btc_price = prom.custom_query(query="crypto_currency{pair='btcusd', exchange='kraken'}")
+    btc_price = float( btc_price[0]["value"][1])
+
+    percent = ((strike_price / btc_price) - 1) * 100
+    return f"{percent:.2f}% away from the Strike Price"
+
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
@@ -37,6 +53,11 @@ async def refresh_capacity():
     capacity = get_vault_capacity()
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=capacity))
 
+@tasks.loop(seconds=float(VAULT_REFRESH_TIMER))
+async def refresh_capacity():
+    strike_percent = get_strike_percent()
+    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=strike_percent))
+
 @client.event
 async def on_message(message):
     if message.author == client.user:
@@ -45,5 +66,9 @@ async def on_message(message):
     if message.content.startswith('$btcvault'):
         capacity = get_vault_capacity()
         await message.channel.send(capacity)
+
+    if message.content.startswith('$btcstrike'):
+        strike_percent = get_strike_percent()
+        await message.channel.send(strike_percent)
 
 client.run(TOKEN)
