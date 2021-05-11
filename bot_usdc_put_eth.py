@@ -24,7 +24,7 @@ def get_vault_capacity():
     cap = contract.functions.cap().call()
     balance = contract.functions.totalBalance().call()
     
-    capacity = (cap - balance) / 10**8
+    capacity = (cap - balance) / 10**6
     return f"{capacity:.2f} USDC Capacity"
 
 @client.event
