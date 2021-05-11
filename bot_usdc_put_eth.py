@@ -42,7 +42,7 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith('$btcvault'):
+    if message.content.startswith('$ethputvault'):
         capacity = get_vault_capacity()
         await message.channel.send(capacity)
 
