@@ -7,7 +7,7 @@ from prometheus_api_client import PrometheusConnect
 
 load_dotenv()
 
-TOKEN = os.getenv('DISCORD_TOKEN_ETH_STRIKE')
+TOKEN = os.getenv('DISCORD_TOKEN_ETH_CALL_STRIKE')
 INFURA_KEY = os.getenv('INFURA_KEY')
 VAULT_REFRESH_TIMER = os.getenv('VAULT_REFRESH_TIMER')
 
@@ -32,7 +32,7 @@ def get_strike_percent():
     eth_price = float(eth_price[0]["value"][1])
 
     percent = ((strike_price / eth_price) - 1) * 100
-    return f"{percent:.2f}% away from the Strike Price"
+    return f"${round(strike_price)}: {percent:.2f}% away"
 
 @client.event
 async def on_ready():
@@ -49,7 +49,7 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith('$ethstrike'):
+    if message.content.startswith('$ethcallstrike'):
         strike_percent = get_strike_percent()
         await message.channel.send(strike_percent)
         

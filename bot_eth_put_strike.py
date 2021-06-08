@@ -7,11 +7,11 @@ from prometheus_api_client import PrometheusConnect
 
 load_dotenv()
 
-TOKEN = os.getenv('DISCORD_TOKEN_BTC_STRIKE')
+TOKEN = os.getenv('DISCORD_TOKEN_ETH_PUT_STRIKE')
 INFURA_KEY = os.getenv('INFURA_KEY')
 VAULT_REFRESH_TIMER = os.getenv('VAULT_REFRESH_TIMER')
 
-ADDRESS = "0x8b5876f5B0Bf64056A89Aa7e97511644758c3E8c"
+ADDRESS = "0x16772a7f4a3ca291C21B8AcE76F9332dDFfbb5Ef"
 
 w3 = Web3(Web3.HTTPProvider(f"https://mainnet.infura.io/v3/{INFURA_KEY}"))
 
@@ -24,15 +24,15 @@ def get_strike_percent():
     prom = PrometheusConnect(url ="http://18.217.47.37:9090/", disable_ssl=True)
 
     # getting strike price
-    strike_price = prom.custom_query(query="query_vaultShortPositions_strikePrice{job='rBTC-THETA'} / 100000000")
+    strike_price = prom.custom_query(query="query_vaultShortPositions_strikePrice{job='rUSDC-ETH-P-THETA'} / 100000000")
     strike_price = float(strike_price[0]["value"][1])
 
     # getting eth price
-    btc_price = prom.custom_query(query="crypto_currency{pair='btcusd', exchange='kraken'}")
-    btc_price = float( btc_price[0]["value"][1])
+    eth_price = prom.custom_query(query="crypto_currency{pair='ethusd', exchange='kraken'}")
+    eth_price = float(eth_price[0]["value"][1])
 
-    percent = ((strike_price / btc_price) - 1) * 100
-    return f"{percent:.2f}% away from the Strike Price"
+    percent = ((strike_price / eth_price) - 1) * 100
+    return f"${round(strike_price)}: {percent:.2f}% away"
 
 @client.event
 async def on_ready():
@@ -49,8 +49,8 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith('$btcstrike'):
+    if message.content.startswith('$ethputstrike'):
         strike_percent = get_strike_percent()
         await message.channel.send(strike_percent)
-
+        
 client.run(TOKEN)
